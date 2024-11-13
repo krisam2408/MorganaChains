@@ -15,10 +15,8 @@ public sealed class AESMorgana
         m_publicKey = settings.PublicKey;
     }
 
-    public string Encrypt(string text)
+    public byte[] Encrypt(byte[] data)
     {
-        byte[] textByteArray = Encoding.UTF8.GetBytes(text);
-
         using (Aes aes = Aes.Create())
         {
             aes.IV = m_publicKey;
@@ -29,19 +27,24 @@ public sealed class AESMorgana
             using (MemoryStream ms = new())
             using (CryptoStream cs = new(ms, encryptor, CryptoStreamMode.Write))
             {
-                cs.Write(textByteArray, 0, textByteArray.Length);
+                cs.Write(data, 0, data.Length);
                 cs.FlushFinalBlock();
-                return Convert.ToBase64String(ms.ToArray());
+                return ms.ToArray();
             }
         }
     }
 
-    public bool TryDecrypt(string text, out string decrypted)
+    public string EncryptString(string str)
     {
-        decrypted = "";
-        text = text.Replace(" ", "+");
-        byte[] textByteArray = Convert.FromBase64String(text);
+        byte[] strByteArray = Encoding.UTF8.GetBytes(str);
 
+        byte[] encrypted = Encrypt(strByteArray);
+
+        return Convert.ToBase64String(encrypted.ToArray());
+    }
+
+    public bool TryDecrypt(byte[] data, out byte[]? decryptedData)
+    {
         try
         {
             using (Aes aes = Aes.Create())
@@ -54,17 +57,36 @@ public sealed class AESMorgana
                 using (MemoryStream ms = new())
                 using (CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Read))
                 {
-                    cs.Write(textByteArray, 0, textByteArray.Length);
+                    cs.Write(data, 0, data.Length);
                     cs.FlushFinalBlock();
-                    decrypted = Encoding.UTF8.GetString(ms.ToArray());
+                    decryptedData = ms.ToArray();
                     return true;
                 }
             }
         }
         catch
         {
+            decryptedData = null;
             return false;
         }
+    }
+
+    public bool TryDecryptString(string str, out string? decrypted)
+    {
+        decrypted = null;
+        str = str.Replace(" ", "+");
+        byte[] strByteArray = Convert.FromBase64String(str);
+        
+        if(TryDecrypt(strByteArray, out byte[]? decryptedData))
+        {
+            if (decryptedData is null)
+                return false;
+
+            decrypted = Encoding.UTF8.GetString(decryptedData);
+            return true;
+        }
+
+        return false;
     }
 
     public static string GenerateRandomKey(string? characters = null)

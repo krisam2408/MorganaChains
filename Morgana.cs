@@ -18,9 +18,27 @@ public sealed class Morgana
         }
     }
 
-    public Morgana(string? characters = null)
+    public Morgana()
     {
-        m_characters = characters;
+        m_characters = null;
+    }
+
+    public Morgana(string characters, bool addToDefault = false)
+    {
+        if (!addToDefault)
+        {
+            m_characters = characters;
+            return;
+        }
+
+        m_characters = "";
+        string t = DefaultCharacters + characters;
+
+        foreach(char c in t)
+        {
+            if (!m_characters.Contains(c))
+                m_characters += c;
+        }
     }
 
     public string GenerateRandomLengthPassword(int length = 10, int offset = 2)
@@ -46,53 +64,30 @@ public sealed class Morgana
         for (int i = 0; i < length; i++)
             sb.Append(Characters[random.Next(Characters.Length)]);
 
-        string finalString = sb.ToString();
+        string result = sb.ToString();
 
-        return finalString;
+        return result;
     }
 
-    public static string Hash(string text, HashFormat format = HashFormat.MD5)
+    public static byte[] Hash(byte[] data, HashFormat format = HashFormat.MD5)
     {
-        if (format == HashFormat.MD5)
-            return HashMD5(text);
-
         if (format == HashFormat.SHA256)
-            return HashSHA256(text);
+            return SHA256.HashData(data);
 
         if (format == HashFormat.SHA384)
-            return HashSHA384(text);
+            return SHA384.HashData(data);
 
         if (format == HashFormat.SHA512)
-            return HashSHA512(text);
+            return SHA512.HashData(data);
 
-        return text;
+        return MD5.HashData(data);
     }
 
-    private static string HashMD5(string text)
+    public static string HashString(string str, HashFormat format = HashFormat.MD5)
     {
-        byte[] buffer = Encoding.UTF8.GetBytes(text);
-        byte[] computedBuffer = MD5.HashData(buffer);
-        return Convert.ToBase64String(computedBuffer);
-    }
-
-    private static string HashSHA256(string text)
-    {
-        byte[] buffer = Encoding.UTF8.GetBytes(text);
-        byte[] computedBuffer = SHA256.HashData(buffer);
-        return Convert.ToBase64String(computedBuffer);
-    }
-
-    private static string HashSHA384(string text)
-    {
-        byte[] buffer = Encoding.UTF8.GetBytes(text);
-        byte[] computedBuffer = SHA384.HashData(buffer);
-        return Convert.ToBase64String(computedBuffer);
-    }
-
-    private static string HashSHA512(string text)
-    {
-        byte[] buffer = Encoding.UTF8.GetBytes(text);
-        byte[] computedBuffer = SHA512.HashData(buffer);
-        return Convert.ToBase64String(computedBuffer);
+        byte[] data = Encoding.UTF8.GetBytes(str);
+        byte[] hash = Hash(data, format);
+        string result = Convert.ToBase64String(hash);
+        return result;
     }
 }
