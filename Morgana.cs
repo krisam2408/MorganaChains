@@ -90,4 +90,14 @@ public sealed class Morgana
         string result = Convert.ToBase64String(hash);
         return result;
     }
+
+    public static byte[] Encrypt(byte[] data)
+    {
+        List<byte> result = [];
+
+        foreach (byte b in data)
+            result.Add((byte)(byte.MaxValue - b));
+
+        return result.ToArray();
+    }
 }
