@@ -89,27 +89,12 @@ public sealed class AESMorgana
         return false;
     }
 
-    public static string GenerateRandomKey(string? characters = null)
+    public static KeyPair GenerateKeyPair()
     {
-        if(string.IsNullOrWhiteSpace(characters))
-            characters = Morgana.DefaultCharacters;
-
-        Random rnd = new();
-        int strLen = characters.Length;
-        int len = rnd.Next(10, 100);
-
-        for (int i = 0; i < len; i++)
-            rnd.Next();
-
-        StringBuilder sb = new();
-
-        for (int i = 0; i < 16; i++)
+        using (Aes aes = Aes.Create())
         {
-            int e = rnd.Next(strLen);
-            sb.Append(characters[e]);
+            KeyPair result = new(aes);
+            return result;
         }
-
-        string result = sb.ToString();
-        return result;
     }
 }
