@@ -19,14 +19,14 @@ public sealed class EncodedKeyPair
         if (string.IsNullOrWhiteSpace(secretKey))
             throw new NullReferenceException(nameof(secretKey));
 
-        PublicKey = Encoding.UTF8.GetBytes(publicKey);
-        SecretKey = Encoding.UTF8.GetBytes(secretKey);
+        PublicKey = Encoding.ASCII.GetBytes(publicKey);
+        SecretKey = Encoding.ASCII.GetBytes(secretKey);
     }
 
     public EncodedKeyPair(string publicKey, string secretKey)
     {
-        PublicKey = Encoding.UTF8.GetBytes(publicKey);
-        SecretKey = Encoding.UTF8.GetBytes(secretKey);
+        PublicKey = Encoding.ASCII.GetBytes(publicKey);
+        SecretKey = Encoding.ASCII.GetBytes(secretKey);
     }
 
     public EncodedKeyPair(KeyPair keyPair) : this(keyPair.PublicKey, keyPair.SecretKey) { }

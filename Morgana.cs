@@ -69,6 +69,26 @@ public sealed class Morgana
         return result;
     }
 
+    public static string ToBase64(byte[] bytes)
+    {
+        return Convert.ToBase64String(bytes);
+    }
+
+    public static string ToBase64(Stream stream)
+    {
+        using(MemoryStream ms = new())
+        {
+            stream.CopyTo(ms);
+            byte[] buffer = ms.ToArray();
+            return Convert.ToBase64String(buffer);
+        }
+    }
+
+    public static byte[] FromBase64(string base64)
+    {
+        return Convert.FromBase64String(base64);
+    }
+
     public static byte[] Hash(byte[] data, HashFormat format = HashFormat.MD5)
     {
         if (format == HashFormat.SHA256)
@@ -85,7 +105,7 @@ public sealed class Morgana
 
     public static string HashString(string str, HashFormat format = HashFormat.MD5)
     {
-        byte[] data = Encoding.UTF8.GetBytes(str);
+        byte[] data = Encoding.ASCII.GetBytes(str);
         byte[] hash = Hash(data, format);
         string result = Convert.ToBase64String(hash);
         return result;

@@ -36,7 +36,7 @@ public sealed class AESMorgana
 
     public string EncryptString(string str)
     {
-        byte[] strByteArray = Encoding.UTF8.GetBytes(str);
+        byte[] strByteArray = Encoding.ASCII.GetBytes(str);
 
         byte[] encrypted = Encrypt(strByteArray);
 
@@ -55,7 +55,7 @@ public sealed class AESMorgana
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
                 using (MemoryStream ms = new())
-                using (CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Read))
+                using (CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Write))
                 {
                     cs.Write(data, 0, data.Length);
                     cs.FlushFinalBlock();
@@ -82,34 +82,19 @@ public sealed class AESMorgana
             if (decryptedData is null)
                 return false;
 
-            decrypted = Encoding.UTF8.GetString(decryptedData);
+            decrypted = Encoding.ASCII.GetString(decryptedData);
             return true;
         }
 
         return false;
     }
 
-    public static string GenerateRandomKey(string? characters = null)
+    public static KeyPair GenerateKeyPair()
     {
-        if(string.IsNullOrWhiteSpace(characters))
-            characters = Morgana.DefaultCharacters;
-
-        Random rnd = new();
-        int strLen = characters.Length;
-        int len = rnd.Next(10, 100);
-
-        for (int i = 0; i < len; i++)
-            rnd.Next();
-
-        StringBuilder sb = new();
-
-        for (int i = 0; i < 16; i++)
+        using (Aes aes = Aes.Create())
         {
-            int e = rnd.Next(strLen);
-            sb.Append(characters[e]);
+            KeyPair result = new(aes);
+            return result;
         }
-
-        string result = sb.ToString();
-        return result;
     }
 }
