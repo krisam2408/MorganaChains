@@ -16,8 +16,8 @@ public class KeyPair
 
     public KeyPair(byte[] publicKey, byte[] secretKey)
     {
-        PublicKey = Encoding.UTF8.GetString(publicKey);
-        SecretKey = Encoding.UTF8.GetString(secretKey);
+        PublicKey = Encoding.ASCII.GetString(publicKey);
+        SecretKey = Encoding.ASCII.GetString(secretKey);
     }
 
     public KeyPair(string publicKey, string secretKey)
@@ -31,8 +31,8 @@ public class KeyPair
         aes.GenerateKey();
         aes.GenerateIV();
 
-        PublicKey = Encoding.UTF8.GetString(aes.IV);
-        SecretKey = Encoding.UTF8.GetString(aes.Key);
+        PublicKey = Encoding.ASCII.GetString(aes.IV);
+        SecretKey = Encoding.ASCII.GetString(aes.Key);
     }
 
     public KeyPair(RSA rsa)
@@ -42,9 +42,9 @@ public class KeyPair
 
         RSAParameters info = rsa.ExportParameters(true);
         if(info.Modulus is not null)
-            PublicKey = Encoding.UTF8.GetString(info.Modulus);
+            PublicKey = Encoding.ASCII.GetString(info.Modulus);
 
         if(info.Exponent is not null)
-            SecretKey = Encoding.UTF8.GetString(info.Exponent);
+            SecretKey = Encoding.ASCII.GetString(info.Exponent);
     }
 }

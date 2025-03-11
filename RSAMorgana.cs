@@ -28,7 +28,7 @@ public sealed class RSAMorgana
 
     public string EncryptString(string str, RSAPadding padding = RSAPadding.Pkcs)
     {
-        byte[] data = Encoding.UTF8.GetBytes(str);
+        byte[] data = Encoding.ASCII.GetBytes(str);
         byte[] encrypted = Encrypt(data, padding);
         return Convert.ToBase64String(encrypted);
     }

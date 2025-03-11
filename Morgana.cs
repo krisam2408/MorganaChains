@@ -105,7 +105,7 @@ public sealed class Morgana
 
     public static string HashString(string str, HashFormat format = HashFormat.MD5)
     {
-        byte[] data = Encoding.UTF8.GetBytes(str);
+        byte[] data = Encoding.ASCII.GetBytes(str);
         byte[] hash = Hash(data, format);
         string result = Convert.ToBase64String(hash);
         return result;
