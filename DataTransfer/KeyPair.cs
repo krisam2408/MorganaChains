@@ -37,14 +37,6 @@ public class KeyPair
 
     public KeyPair(RSA rsa)
     {
-        PublicKey = "";
-        SecretKey = "";
-
-        RSAParameters info = rsa.ExportParameters(true);
-        if(info.Modulus is not null)
-            PublicKey = Encoding.ASCII.GetString(info.Modulus);
-
-        if(info.Exponent is not null)
-            SecretKey = Encoding.ASCII.GetString(info.Exponent);
+        throw new NotImplementedException();
     }
 }

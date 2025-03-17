@@ -74,7 +74,6 @@ public sealed class AESMorgana
     public bool TryDecryptString(string str, out string? decrypted)
     {
         decrypted = null;
-        str = str.Replace(" ", "+");
         byte[] strByteArray = Convert.FromBase64String(str);
         
         if(TryDecrypt(strByteArray, out byte[]? decryptedData))
