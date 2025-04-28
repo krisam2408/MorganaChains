@@ -43,7 +43,7 @@ public sealed class AESMorgana
         return Convert.ToBase64String(encrypted.ToArray());
     }
 
-    public bool TryDecrypt(byte[] data, out byte[]? decryptedData)
+    public bool TryDecrypt(byte[] data, out byte[] decryptedData)
     {
         try
         {
@@ -66,14 +66,14 @@ public sealed class AESMorgana
         }
         catch
         {
-            decryptedData = null;
+            decryptedData = [];
             return false;
         }
     }
 
-    public bool TryDecryptString(string str, out string? decrypted)
+    public bool TryDecryptString(string str, out string decrypted)
     {
-        decrypted = null;
+        decrypted = "";
         str = str.Replace(" ", "+");
         byte[] strByteArray = Convert.FromBase64String(str);
         
